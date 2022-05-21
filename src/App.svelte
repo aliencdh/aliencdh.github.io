@@ -1,6 +1,7 @@
-<script>
+<script lang="ts">
 	import NavBar from './NavBar.svelte';
 	let name = 'world';
+	console.log(`Hello ${name}!`);
 </script>
 
 <div class="main">

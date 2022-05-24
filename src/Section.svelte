@@ -8,7 +8,7 @@
         position: relative;
         top: ${settings.top || 0}%;
         overflow-wrap: break-word;
-        hyphens: manual;
+        hyphens: auto;
         inline-size: 70%;
     `;
 </script>

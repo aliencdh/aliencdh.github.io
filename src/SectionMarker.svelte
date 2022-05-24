@@ -17,5 +17,7 @@
         width: 15%;
         text-align: center;
         font-size: larger;
+        overflow-wrap: break-word;
+        hyphens: auto;
     }
 </style>

@@ -498,9 +498,9 @@ var app = (function () {
     			h3 = element("h3");
     			t0 = text(/*title*/ ctx[0]);
     			t1 = text(" >");
-    			attr_dev(h3, "class", "svelte-1jtcu4c");
+    			attr_dev(h3, "class", "svelte-k11cgf");
     			add_location(h3, file$2, 5, 4, 77);
-    			attr_dev(div, "class", "marker svelte-1jtcu4c");
+    			attr_dev(div, "class", "marker svelte-k11cgf");
     			add_location(div, file$2, 4, 0, 52);
     		},
     		l: function claim(nodes) {
@@ -605,7 +605,7 @@ var app = (function () {
     			if (default_slot) default_slot.c();
     			attr_dev(div, "style", /*style*/ ctx[1]);
     			attr_dev(div, "class", /*div_class*/ ctx[0]);
-    			add_location(div, file$1, 15, 0, 311);
+    			add_location(div, file$1, 15, 0, 309);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -677,7 +677,7 @@ var app = (function () {
         position: relative;
         top: ${settings.top || 0}%;
         overflow-wrap: break-word;
-        hyphens: manual;
+        hyphens: auto;
         inline-size: 70%;
     `;
 

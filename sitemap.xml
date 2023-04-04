@@ -13,7 +13,17 @@
         <loc>https://aliencdh.github.io/projects/</loc>
     </url>
     <url>
+<<<<<<< HEAD
         <loc>https://aliencdh.github.io/projects/ugsg/</loc>
         <lastmod>2023-04-04</lastmod>
     </url>
+=======
+        <loc>https://aliencdh.github.io/projects/fantasia/</loc>
+        <lastmod>2023-04-04</lastmod>
+    </url>
+    <url>
+        <loc>https://aliencdh.github.io/projects/ugsg/</loc>
+        <lastmod>2023-04-03</lastmod>
+    </url>
+>>>>>>> a26056c (add fantasia to the projects list, make them link to git repos)
 </urlset>

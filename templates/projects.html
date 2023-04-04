@@ -5,11 +5,12 @@
 
 {% for page in section.pages %}
 <div class="marker">
-    <h3><a href="{{ page.permalink | safe }}">{{ page.title }} ></a></h3>
+    <h3><a href="{{ page.description | safe }}">{{ page.title }} ></a></h3>
     <div class="section">
         <p>{{ page.content | safe }}</p>
     </div>
 </div>
+<br><br><br>
 {% endfor %}
 
 {% endblock content %}

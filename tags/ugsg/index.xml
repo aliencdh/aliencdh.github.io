@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>ugsg on AlienCDH</title>
+    <link>http://example.org/tags/ugsg/</link>
+    <description>Recent content in ugsg on AlienCDH</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Sun, 16 Apr 2023 00:00:00 +0000</lastBuildDate><atom:link href="http://example.org/tags/ugsg/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>UGSG</title>
+      <link>http://example.org/projects/ugsg/</link>
+      <pubDate>Sun, 16 Apr 2023 00:00:00 +0000</pubDate>
+      
+      <guid>http://example.org/projects/ugsg/</guid>
+      <description>UGSG UGSG stands for Untitled Grand Strategy Game and it is, as the name suggests, a Grand Strategy Game that I haven&amp;rsquo;t managed to come up with a name for.</description>
+      <content>&lt;h4 id=&#34;ugsgugsg&#34;&gt;&lt;a href=&#34;http://example.org/ugsg&#34;&gt;UGSG&lt;/a&gt;&lt;/h4&gt;
+&lt;blockquote&gt;
+&lt;p&gt;UGSG stands for &lt;strong&gt;U&lt;/strong&gt;ntitled &lt;strong&gt;G&lt;/strong&gt;rand &lt;strong&gt;S&lt;/strong&gt;trategy &lt;strong&gt;G&lt;/strong&gt;ame and it is, as the name suggests,
+a &lt;a href=&#34;https://en.wikipedia.org/wiki/Category:Grand_strategy_video_games&#34;&gt;Grand Strategy Game&lt;/a&gt;
+that I haven&amp;rsquo;t managed to come up with a name for.&lt;/p&gt;
+&lt;/blockquote&gt;
+</content>
+    </item>
+    
+  </channel>
+</rss>

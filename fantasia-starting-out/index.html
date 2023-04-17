@@ -177,11 +177,11 @@ I hope my way of explaining concepts through examples will work for you as well.
 <p>First, let&rsquo;s set our crate up.</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>cargo new --lib fantasia
 </span></span><span style="display:flex;"><span>cd fantasia
-</span></span></code></pre></div><p>For now, I think we should only have 2 dependencies:
-the <a href="https://crates.io/crates/image">image</a> and <a href="https://crates.io/crates/wasm-bindgen">wasm-bindgen</a> crates.</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>cargo add image wasm-bindgen
-</span></span></code></pre></div><p><a href="https://crates.io/crates/wasm-bindgen">wasm-bindgen</a> is here to make the renderer usable on the web as well.</p>
-<p><a href="https://crates.io/crates/image">image</a> is here so that we can more easily test it.</p>
+</span></span></code></pre></div><p>For now, I think we should only have 1 dependency:
+the <a href="https://crates.io/crates/image">image</a> crate.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>cargo add image
+</span></span></code></pre></div><p>This crate isn&rsquo;t actually needed for the renderer itself, but it provides a nice and simple way to test it.
+It will be removed later on.</p>
 
       </div></div>
 
@@ -193,6 +193,10 @@ the <a href="https://crates.io/crates/image">image</a> and <a href="https://crat
   
 
   <div class="content-nav">  
+  
+    <div>
+        <a href="https://aliencdh.github.io/fantasia-black-screen/">Next: fantasia - Black Screen</a>
+    </div>
   
   </div>
 </article>

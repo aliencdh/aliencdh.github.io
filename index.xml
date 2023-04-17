@@ -8,6 +8,40 @@
     <language>en-us</language>
     <lastBuildDate>Sun, 16 Apr 2023 12:54:17 +0200</lastBuildDate><atom:link href="https://aliencdh.github.io/index.xml" rel="self" type="application/rss+xml" />
     <item>
+      <title>fantasia - Starting Out</title>
+      <link>https://aliencdh.github.io/fantasia-starting-out/</link>
+      <pubDate>Mon, 17 Apr 2023 20:32:13 +0200</pubDate>
+      
+      <guid>https://aliencdh.github.io/fantasia-starting-out/</guid>
+      <description>First, let&amp;rsquo;s define some goals:
+API-agnostic. The renderer should be a library-type crate that simply provides the necessary tools for rendering into an array of bytes representing pixels. Being API-agnostic would make it very flexible and versatile, allowing its users to adapt to their own specific use cases. Capable of rendering 3D models, of course. That&amp;rsquo;s the main point, after all. As few dependencies as possible. We don&amp;rsquo;t want to complicate ourselves or pick up too much stuff that we don&amp;rsquo;t need.</description>
+      <content>&lt;p&gt;First, let&amp;rsquo;s define some goals:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;API-agnostic. The renderer should be a library-type crate that simply provides the necessary
+tools for rendering into an array of bytes representing pixels.
+Being API-agnostic would make it very flexible and versatile, allowing its users to adapt
+to their own specific use cases.&lt;/li&gt;
+&lt;li&gt;Capable of rendering 3D models, of course. That&amp;rsquo;s the main point, after all.&lt;/li&gt;
+&lt;li&gt;As few dependencies as possible. We don&amp;rsquo;t want to complicate ourselves or pick up too much stuff that we don&amp;rsquo;t need.
+The renderer should be pretty simple in its design and not bring in too many dependencies to whoever might decide to use
+it in their project.&lt;/li&gt;
+&lt;li&gt;Something you hopefully understand pretty well by the end of this guide. This is more of a goal for me, if anything.
+I hope my way of explaining concepts through examples will work for you as well.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;And now that that&amp;rsquo;s out of the way&amp;hellip;&lt;/p&gt;
+&lt;h3 id=&#34;setup&#34;&gt;Setup:&lt;/h3&gt;
+&lt;p&gt;First, let&amp;rsquo;s set our crate up.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;cargo new --lib fantasia
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;cd fantasia
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;For now, I think we should only have 2 dependencies:
+the &lt;a href=&#34;https://crates.io/crates/image&#34;&gt;image&lt;/a&gt; and &lt;a href=&#34;https://crates.io/crates/wasm-bindgen&#34;&gt;wasm-bindgen&lt;/a&gt; crates.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;cargo add image wasm-bindgen
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;&lt;a href=&#34;https://crates.io/crates/wasm-bindgen&#34;&gt;wasm-bindgen&lt;/a&gt; is here to make the renderer usable on the web as well.&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;https://crates.io/crates/image&#34;&gt;image&lt;/a&gt; is here so that we can more easily test it.&lt;/p&gt;
+</content>
+    </item>
+    
+    <item>
       <title>fantasia</title>
       <link>https://aliencdh.github.io/projects/fantasia/</link>
       <pubDate>Sun, 16 Apr 2023 00:00:00 +0000</pubDate>
@@ -29,7 +63,11 @@ have to somehow try to understand what was going on before adapting it to Rust.&
 &lt;li&gt;I simply like the safety of Rust, and how it makes it so that I have much fewer things to worry about
 than in C.&lt;/li&gt;
 &lt;/ol&gt;
-&lt;p&gt;You can also check out my progress on &lt;a href=&#34;https://github.com/aliencdh/fantasia&#34;&gt;GitHub&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;But&amp;hellip; The book just didn&amp;rsquo;t work that well for me, no offense to the author.
+It explained certain concepts in a way that I just couldn&amp;rsquo;t understand, and sometimes it didn&amp;rsquo;t explain them at all.
+So I stumbled around trying my best to come up with my own solutions where I could, until it all started clicking for me.
+Hoping to make this process easier for other people, I&amp;rsquo;ve decided to try and write a guide for it.&lt;/p&gt;
+&lt;p&gt;You can also check out my code on &lt;a href=&#34;https://github.com/aliencdh/fantasia&#34;&gt;GitHub&lt;/a&gt;.&lt;/p&gt;
 </content>
     </item>
     

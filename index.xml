@@ -8,6 +8,216 @@
     <language>en-us</language>
     <lastBuildDate>Sun, 16 Apr 2023 12:54:17 +0200</lastBuildDate><atom:link href="https://aliencdh.github.io/index.xml" rel="self" type="application/rss+xml" />
     <item>
+      <title>fantasia - Drawing Lines</title>
+      <link>https://aliencdh.github.io/fantasia-line/</link>
+      <pubDate>Tue, 18 Apr 2023 17:39:42 +0200</pubDate>
+      
+      <guid>https://aliencdh.github.io/fantasia-line/</guid>
+      <description>Now, on to something more interesting: drawing stuff. We need to figure out the simple things first, so we&amp;rsquo;ll start with the simplest thing you can draw (except for a point, obviously): a line segment.
+A line segment needs a starting point and an ending point. Let&amp;rsquo;s first define a Point struct:
+pub struct Point { pub x: f32, pub y: f32, pub z: f32, } Note: If your point&amp;rsquo;s x and y are actual &amp;ldquo;screen&amp;rdquo; coordinates (i.</description>
+      <content>&lt;p&gt;Now, on to something more interesting: drawing stuff.
+We need to figure out the simple things first,
+so we&amp;rsquo;ll start with the simplest thing you can draw (except for a point, obviously): a line segment.&lt;/p&gt;
+&lt;p&gt;A line segment needs a starting point and an ending point. Let&amp;rsquo;s first define a &lt;code&gt;Point&lt;/code&gt; struct:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-rust&#34; data-lang=&#34;rust&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;pub&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;struct&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;Point&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;pub&lt;/span&gt; x: &lt;span style=&#34;color:#66d9ef&#34;&gt;f32&lt;/span&gt;,
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;pub&lt;/span&gt; y: &lt;span style=&#34;color:#66d9ef&#34;&gt;f32&lt;/span&gt;,
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;pub&lt;/span&gt; z: &lt;span style=&#34;color:#66d9ef&#34;&gt;f32&lt;/span&gt;,
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;blockquote&gt;
+&lt;p&gt;Note: If your point&amp;rsquo;s &lt;code&gt;x&lt;/code&gt; and &lt;code&gt;y&lt;/code&gt; are actual &amp;ldquo;screen&amp;rdquo; coordinates (i.e. a specific position in the image buffer),
+then if you change the width or height of the output, you&amp;rsquo;ll also need to manually update the coordinates.
+To avoid this, I&amp;rsquo;ll be using &amp;ldquo;world&amp;rdquo; coordinates instead. This means I&amp;rsquo;ll represent every component as an &lt;code&gt;f32&lt;/code&gt;,
+describing the point&amp;rsquo;s position relative to the imaginary center of the &amp;ldquo;world&amp;rdquo;.
+For now, that also means the center of the resulting image.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Here are some basic implementations for the &lt;code&gt;Point&lt;/code&gt; struct to make our life easier:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-rust&#34; data-lang=&#34;rust&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;impl&lt;/span&gt; Point {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;pub&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;fn&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;new&lt;/span&gt;(x: &lt;span style=&#34;color:#66d9ef&#34;&gt;f32&lt;/span&gt;, y: &lt;span style=&#34;color:#66d9ef&#34;&gt;f32&lt;/span&gt;, z: &lt;span style=&#34;color:#66d9ef&#34;&gt;f32&lt;/span&gt;) -&amp;gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;Self&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        Self { x, y, z }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;pub&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;fn&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;magnitude&lt;/span&gt;(&lt;span style=&#34;color:#f92672&#34;&gt;&amp;amp;&lt;/span&gt;self) -&amp;gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;f32&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        (self.x.powi(&lt;span style=&#34;color:#ae81ff&#34;&gt;2&lt;/span&gt;) &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; self.y.powi(&lt;span style=&#34;color:#ae81ff&#34;&gt;2&lt;/span&gt;) &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; self.z.powi(&lt;span style=&#34;color:#ae81ff&#34;&gt;2&lt;/span&gt;)).sqrt()
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;impl&lt;/span&gt; Add &lt;span style=&#34;color:#66d9ef&#34;&gt;for&lt;/span&gt; Point {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;type&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;Output&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; Self;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;fn&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;add&lt;/span&gt;(&lt;span style=&#34;color:#66d9ef&#34;&gt;mut&lt;/span&gt; self, rhs: &lt;span style=&#34;color:#a6e22e&#34;&gt;Self&lt;/span&gt;) -&amp;gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;Self&lt;/span&gt;::Output {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        self.x &lt;span style=&#34;color:#f92672&#34;&gt;+=&lt;/span&gt; rhs.x;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        self.y &lt;span style=&#34;color:#f92672&#34;&gt;+=&lt;/span&gt; rhs.y;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        self.z &lt;span style=&#34;color:#f92672&#34;&gt;+=&lt;/span&gt; rhs.z;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        self
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;impl&lt;/span&gt; Sub &lt;span style=&#34;color:#66d9ef&#34;&gt;for&lt;/span&gt; Point {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;type&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;Output&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; Self;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;fn&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;sub&lt;/span&gt;(&lt;span style=&#34;color:#66d9ef&#34;&gt;mut&lt;/span&gt; self, rhs: &lt;span style=&#34;color:#a6e22e&#34;&gt;Self&lt;/span&gt;) -&amp;gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;Self&lt;/span&gt;::Output {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        self.x &lt;span style=&#34;color:#f92672&#34;&gt;-=&lt;/span&gt; rhs.x;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        self.y &lt;span style=&#34;color:#f92672&#34;&gt;-=&lt;/span&gt; rhs.y;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        self.z &lt;span style=&#34;color:#f92672&#34;&gt;-=&lt;/span&gt; rhs.z;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        self
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;/// Scalar Multiplication
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&lt;/span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;impl&lt;/span&gt; Mul&lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;&lt;/span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;f32&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;&amp;gt;&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;for&lt;/span&gt; Point {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;type&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;Output&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; Self;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;fn&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;mul&lt;/span&gt;(&lt;span style=&#34;color:#66d9ef&#34;&gt;mut&lt;/span&gt; self, rhs: &lt;span style=&#34;color:#66d9ef&#34;&gt;f32&lt;/span&gt;) -&amp;gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;Self&lt;/span&gt;::Output {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        self.x &lt;span style=&#34;color:#f92672&#34;&gt;*=&lt;/span&gt; rhs;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        self.y &lt;span style=&#34;color:#f92672&#34;&gt;*=&lt;/span&gt; rhs;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        self.z &lt;span style=&#34;color:#f92672&#34;&gt;*=&lt;/span&gt; rhs;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        self
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;impl&lt;/span&gt; Mul&lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;&lt;/span&gt;Point&lt;span style=&#34;color:#f92672&#34;&gt;&amp;gt;&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;for&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;f32&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;type&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;Output&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; Point;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;fn&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;mul&lt;/span&gt;(self, rhs: &lt;span style=&#34;color:#a6e22e&#34;&gt;Point&lt;/span&gt;) -&amp;gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;Self&lt;/span&gt;::Output {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        rhs &lt;span style=&#34;color:#f92672&#34;&gt;*&lt;/span&gt; self
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id=&#34;the-actual-algorithm&#34;&gt;The actual algorithm&lt;/h2&gt;
+&lt;p&gt;Let&amp;rsquo;s think about our line segment as a difference of 2 vectors: &lt;code&gt;A&lt;/code&gt; and &lt;code&gt;B&lt;/code&gt;.
+
+  &lt;figure class=&#34;left&#34; &gt;
+    &lt;img src=&#34;https://aliencdh.github.io/fantasia-line-algorithm-vectors.svg&#34;   /&gt;
+    
+      &lt;figcaption class=&#34;center&#34; &gt;representation of A, B, and their difference&lt;/figcaption&gt;
+    
+  &lt;/figure&gt;
+
+&lt;/p&gt;
+&lt;p&gt;You can get any point on a vector&amp;rsquo;s trajectory by multiplying it with a scalar, let&amp;rsquo;s call it &lt;code&gt;t&lt;/code&gt;.
+In the above figure you can clearly see exactly that.&lt;/p&gt;
+&lt;p&gt;If we limit the scalars to hundreths from 0 to 1, we can reasonably loop through every describable point in our line segment.
+We won&amp;rsquo;t get &lt;em&gt;every&lt;/em&gt; point, sure, but it should be good enough.&lt;/p&gt;
+&lt;p&gt;Rust doesn&amp;rsquo;t allow floating point ranges, so we have to do some redefining in our implementation:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-rust&#34; data-lang=&#34;rust&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;impl&lt;/span&gt; Renderer {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#75715e&#34;&gt;// ...
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;pub&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;fn&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;line&lt;/span&gt;(&lt;span style=&#34;color:#f92672&#34;&gt;&amp;amp;&lt;/span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;mut&lt;/span&gt; self, color: &lt;span style=&#34;color:#a6e22e&#34;&gt;Rgba&lt;/span&gt;, from: &lt;span style=&#34;color:#a6e22e&#34;&gt;Point&lt;/span&gt;, to: &lt;span style=&#34;color:#a6e22e&#34;&gt;Point&lt;/span&gt;) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;for&lt;/span&gt; t &lt;span style=&#34;color:#66d9ef&#34;&gt;in&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;..&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;100&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &lt;span style=&#34;color:#66d9ef&#34;&gt;let&lt;/span&gt; t &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; t &lt;span style=&#34;color:#66d9ef&#34;&gt;as&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;f32&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;/&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;100.&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &lt;span style=&#34;color:#66d9ef&#34;&gt;let&lt;/span&gt; current &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; t &lt;span style=&#34;color:#f92672&#34;&gt;*&lt;/span&gt; (to &lt;span style=&#34;color:#f92672&#34;&gt;-&lt;/span&gt; from);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &lt;span style=&#34;color:#75715e&#34;&gt;// TODO: put pixel
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;        }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Now, while we could just write the code for actually putting the pixel on the screen/image,
+it&amp;rsquo;s better if we just turn that into its own method to avoid code duplication:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-rust&#34; data-lang=&#34;rust&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;impl&lt;/span&gt; Renderer {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#75715e&#34;&gt;// ...
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;pub&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;fn&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;to_screen_coords&lt;/span&gt;(&lt;span style=&#34;color:#f92672&#34;&gt;&amp;amp;&lt;/span&gt;self, point: &lt;span style=&#34;color:#a6e22e&#34;&gt;Point&lt;/span&gt;) -&amp;gt; (&lt;span style=&#34;color:#66d9ef&#34;&gt;usize&lt;/span&gt;, &lt;span style=&#34;color:#66d9ef&#34;&gt;usize&lt;/span&gt;) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#75715e&#34;&gt;// the `+ 1.` is here to offset coordinates from the center to the top left corner
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;        (
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            ((point.x &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;1.&lt;/span&gt;) &lt;span style=&#34;color:#f92672&#34;&gt;*&lt;/span&gt; self.width &lt;span style=&#34;color:#66d9ef&#34;&gt;as&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;f32&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;/&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;2.&lt;/span&gt;) &lt;span style=&#34;color:#66d9ef&#34;&gt;as&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;usize&lt;/span&gt;,
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            ((point.y &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;1.&lt;/span&gt;) &lt;span style=&#34;color:#f92672&#34;&gt;*&lt;/span&gt; self.height &lt;span style=&#34;color:#66d9ef&#34;&gt;as&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;f32&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;/&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;2.&lt;/span&gt;) &lt;span style=&#34;color:#66d9ef&#34;&gt;as&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;usize&lt;/span&gt;,
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        )
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;pub&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;fn&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;put_pixel&lt;/span&gt;(&lt;span style=&#34;color:#f92672&#34;&gt;&amp;amp;&lt;/span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;mut&lt;/span&gt; self, coords: (&lt;span style=&#34;color:#66d9ef&#34;&gt;usize&lt;/span&gt;, &lt;span style=&#34;color:#66d9ef&#34;&gt;usize&lt;/span&gt;), color: &lt;span style=&#34;color:#a6e22e&#34;&gt;Rgba&lt;/span&gt;) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;let&lt;/span&gt; idx &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; coords.&lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; coords.&lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;*&lt;/span&gt; self.width;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        self.buffer[idx] &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; color.r;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        self.buffer[idx&lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;] &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; color.g;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        self.buffer[idx&lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;2&lt;/span&gt;] &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; color.b;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        self.buffer[idx&lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;3&lt;/span&gt;] &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; color.a;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;And there we have it: a &lt;code&gt;to_screen_coords&lt;/code&gt; method for converting our &amp;ldquo;world&amp;rdquo; coordinates into &amp;ldquo;screen&amp;rdquo; coordinates,
+and a &lt;code&gt;put_pixel&lt;/code&gt; method.&lt;/p&gt;
+&lt;p&gt;We can also make our &lt;code&gt;put_pixel&lt;/code&gt; implementation smaller by using iterators again:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-rust&#34; data-lang=&#34;rust&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;// ...
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;pub&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;fn&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;put_pixel&lt;/span&gt;(&lt;span style=&#34;color:#f92672&#34;&gt;&amp;amp;&lt;/span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;mut&lt;/span&gt; self, coords: (&lt;span style=&#34;color:#66d9ef&#34;&gt;usize&lt;/span&gt;, &lt;span style=&#34;color:#66d9ef&#34;&gt;usize&lt;/span&gt;), color: &lt;span style=&#34;color:#a6e22e&#34;&gt;Rgba&lt;/span&gt;) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;let&lt;/span&gt; idx &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; coords.&lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; coords.&lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;*&lt;/span&gt; self.width;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    self.buffer
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        .splice(idx&lt;span style=&#34;color:#f92672&#34;&gt;..&lt;/span&gt;idx &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;4&lt;/span&gt;, color.bytes().iter().cloned());
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;// ...
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Now, to finish &lt;code&gt;line&lt;/code&gt;:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-rust&#34; data-lang=&#34;rust&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;// ...
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;pub&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;fn&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;line&lt;/span&gt;(&lt;span style=&#34;color:#75715e&#34;&gt;/* ... */&lt;/span&gt;) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;for&lt;/span&gt; t &lt;span style=&#34;color:#66d9ef&#34;&gt;in&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;..&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;100&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#75715e&#34;&gt;// ...
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;        self.put_pixel(self.to_screen_coords(current), color);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;// ...
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id=&#34;results&#34;&gt;Results&lt;/h2&gt;
+&lt;p&gt;Let&amp;rsquo;s draw 3 lines in &lt;code&gt;main.rs&lt;/code&gt; to form a triangle:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-rust&#34; data-lang=&#34;rust&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;fn&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;main&lt;/span&gt;() {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#75715e&#34;&gt;// ...
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;let&lt;/span&gt; a &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; Point::new(&lt;span style=&#34;color:#ae81ff&#34;&gt;0.&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;1.&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;0.&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;let&lt;/span&gt; b &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; Point::new(&lt;span style=&#34;color:#f92672&#34;&gt;-&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;1.&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;0.&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;0.&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;let&lt;/span&gt; c &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; Point::new(&lt;span style=&#34;color:#ae81ff&#34;&gt;1.&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;0.&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;0.&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    renderer.line(Rgba::new(&lt;span style=&#34;color:#ae81ff&#34;&gt;255&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;255&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;255&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;255&lt;/span&gt;), a, b);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    renderer.line(Rgba::new(&lt;span style=&#34;color:#ae81ff&#34;&gt;255&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;255&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;255&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;255&lt;/span&gt;), b, c);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    renderer.line(Rgba::new(&lt;span style=&#34;color:#ae81ff&#34;&gt;255&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;255&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;255&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;255&lt;/span&gt;), c, a);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#75715e&#34;&gt;// ...
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;And now if we run it&amp;hellip;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://aliencdh.github.io/fantasia-line-output-uh-oh.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;oh no&amp;hellip;&lt;/em&gt;&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Why did this happen? It&amp;rsquo;s because we got something &lt;em&gt;slightly&lt;/em&gt; wrong in our algorithm&amp;rsquo;s implementation.
+We assumed the point &lt;code&gt;t(B-A)&lt;/code&gt; to always be on the desired line, but it&amp;rsquo;s only guaranteed to be on the desired &lt;em&gt;vector&lt;/em&gt;.
+Why is that a problem? Well, the origin of a vector isn&amp;rsquo;t set in stone.
+In our example, I set it to the end of &lt;code&gt;A&lt;/code&gt;, but the renderer sets the left corner of the screen as the origin point.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;But we can fix this!&lt;/p&gt;
+&lt;p&gt;By adding &lt;code&gt;t(B-A)&lt;/code&gt; to &lt;code&gt;A&lt;/code&gt; like in the figure below, we can find where the point actually needs to be.&lt;/p&gt;
+
+  &lt;figure class=&#34;left&#34; &gt;
+    &lt;img src=&#34;https://aliencdh.github.io/fantasia-line-algorithm-vectors2.svg&#34;   /&gt;
+    
+      &lt;figcaption class=&#34;center&#34; &gt;the vector C points to the correct point&lt;/figcaption&gt;
+    
+  &lt;/figure&gt;
+
+
+&lt;p&gt;Fixing it should be as simple as this:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-rust&#34; data-lang=&#34;rust&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;// ...
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;pub&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;fn&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;line&lt;/span&gt;(&lt;span style=&#34;color:#75715e&#34;&gt;/* ... */&lt;/span&gt;) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#75715e&#34;&gt;// ...
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;let&lt;/span&gt; current &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; from &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; t &lt;span style=&#34;color:#f92672&#34;&gt;*&lt;/span&gt; (to &lt;span style=&#34;color:#f92672&#34;&gt;-&lt;/span&gt; from);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#75715e&#34;&gt;// ...
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;And the result is&amp;hellip;
+&lt;img src=&#34;https://aliencdh.github.io/fantasia-line-output-uh-oh2.png&#34; alt=&#34;yet another failure&#34;&gt;&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;strong&gt;Author&amp;rsquo;s note&lt;/strong&gt;: I initially thought of cutting the failures out of the guide.
+But I&amp;rsquo;ve now decided against doing that. Failing is an important part of understanding how something works,
+by eliminating some misconceptions. I also want this to stay here as a reminder, for my readers, but also for myself,
+that failing is normal and it&amp;rsquo;s just part of the process. The way I figured the solution out was by just taking
+breaks and coming back with a clearer mind.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Now, what&amp;rsquo;s causing this? It turns out, this algorithm &lt;em&gt;really&lt;/em&gt; doesn&amp;rsquo;t like it when &lt;code&gt;t(B-A)&lt;/code&gt; is negative.
+It might be because of the conversion to screen coordinates, or because of the formula we&amp;rsquo;re using to calculate &lt;code&gt;current&lt;/code&gt;,
+I&amp;rsquo;m not sure. But the way I fixed it was by just ensuring we&amp;rsquo;re always drawing from the point closer to the top left corner,
+towards the one farther away.&lt;/p&gt;
+&lt;p&gt;And here&amp;rsquo;s an implementation:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-rust&#34; data-lang=&#34;rust&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;pub&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;fn&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;line&lt;/span&gt;(&lt;span style=&#34;color:#75715e&#34;&gt;/* ... */&lt;/span&gt;) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;let&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;mut&lt;/span&gt; from &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; self.to_screen_coords(from);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;let&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;mut&lt;/span&gt; to &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; self.to_screen_coords(to);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; to.magnitude() &lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;&lt;/span&gt; from.magnitude() {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        std::mem::swap(&lt;span style=&#34;color:#f92672&#34;&gt;&amp;amp;&lt;/span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;mut&lt;/span&gt; from, &lt;span style=&#34;color:#f92672&#34;&gt;&amp;amp;&lt;/span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;mut&lt;/span&gt; to);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;for&lt;/span&gt; t &lt;span style=&#34;color:#66d9ef&#34;&gt;in&lt;/span&gt; t&lt;span style=&#34;color:#f92672&#34;&gt;..&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;100&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#75715e&#34;&gt;// ...
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;        self.put_pixel(current, color);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Since we&amp;rsquo;re already using screen coordinates to determine from where we should actually start drawing from,
+I&amp;rsquo;ve decided to just redefine &lt;code&gt;to&lt;/code&gt; and &lt;code&gt;from&lt;/code&gt; accordingly, then swap them around if &lt;code&gt;to&lt;/code&gt; turns out to be closer
+to the top left corner.&lt;/p&gt;
+&lt;h2 id=&#34;and-now-finally&#34;&gt;And now, &lt;em&gt;finally&lt;/em&gt;&amp;hellip;&lt;/h2&gt;
+&lt;p&gt;&lt;img src=&#34;https://aliencdh.github.io/fantasia-line-output-success.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;You did it! You&amp;rsquo;ve just a the traditional first triangle!&lt;/p&gt;
+</content>
+    </item>
+    
+    <item>
       <title>fantasia - Black Screen</title>
       <link>https://aliencdh.github.io/fantasia-black-screen/</link>
       <pubDate>Mon, 17 Apr 2023 22:41:49 +0200</pubDate>

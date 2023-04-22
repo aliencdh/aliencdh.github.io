@@ -9,10 +9,10 @@
     <lastBuildDate>Sun, 16 Apr 2023 12:54:17 +0200</lastBuildDate><atom:link href="https://aliencdh.github.io/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>fantasia - Drawing Lines</title>
-      <link>https://aliencdh.github.io/fantasia-line/</link>
+      <link>https://aliencdh.github.io/fantasia/line/</link>
       <pubDate>Tue, 18 Apr 2023 17:39:42 +0200</pubDate>
       
-      <guid>https://aliencdh.github.io/fantasia-line/</guid>
+      <guid>https://aliencdh.github.io/fantasia/line/</guid>
       <description>Now, on to something more interesting: drawing stuff. We need to figure out the simple things first, so we&amp;rsquo;ll start with the simplest thing you can draw (except for a point, obviously): a line segment.
 A line segment needs a starting point and an ending point. Let&amp;rsquo;s first define a Point struct:
 pub struct Point { pub x: f32, pub y: f32, pub z: f32, } Note: If your point&amp;rsquo;s x and y are actual &amp;ldquo;screen&amp;rdquo; coordinates (i.</description>
@@ -80,7 +80,7 @@ For now, that also means the center of the resulting image.&lt;/p&gt;
 &lt;p&gt;Let&amp;rsquo;s think about our line segment as a difference of 2 vectors: &lt;code&gt;A&lt;/code&gt; and &lt;code&gt;B&lt;/code&gt;.
 
   &lt;figure class=&#34;left&#34; &gt;
-    &lt;img src=&#34;https://aliencdh.github.io/fantasia-line-algorithm-vectors.svg&#34;   /&gt;
+    &lt;img src=&#34;https://aliencdh.github.io/fantasia/fantasia-line-algorithm-vectors.svg&#34;   /&gt;
     
       &lt;figcaption class=&#34;center&#34; &gt;representation of A, B, and their difference&lt;/figcaption&gt;
     
@@ -156,7 +156,7 @@ and a &lt;code&gt;put_pixel&lt;/code&gt; method.&lt;/p&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#75715e&#34;&gt;// ...
 &lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;}
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;And now if we run it&amp;hellip;&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://aliencdh.github.io/fantasia-line-output-uh-oh.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://aliencdh.github.io/fantasia/fantasia-line-output-uh-oh.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;&lt;em&gt;oh no&amp;hellip;&lt;/em&gt;&lt;/p&gt;
 &lt;blockquote&gt;
 &lt;p&gt;Why did this happen? It&amp;rsquo;s because we got something &lt;em&gt;slightly&lt;/em&gt; wrong in our algorithm&amp;rsquo;s implementation.
@@ -168,7 +168,7 @@ In our example, I set it to the end of &lt;code&gt;A&lt;/code&gt;, but the rende
 &lt;p&gt;By adding &lt;code&gt;t(B-A)&lt;/code&gt; to &lt;code&gt;A&lt;/code&gt; like in the figure below, we can find where the point actually needs to be.&lt;/p&gt;
 
   &lt;figure class=&#34;left&#34; &gt;
-    &lt;img src=&#34;https://aliencdh.github.io/fantasia-line-algorithm-vectors2.svg&#34;   /&gt;
+    &lt;img src=&#34;https://aliencdh.github.io/fantasia/fantasia-line-algorithm-vectors2.svg&#34;   /&gt;
     
       &lt;figcaption class=&#34;center&#34; &gt;the vector C points to the correct point&lt;/figcaption&gt;
     
@@ -185,7 +185,7 @@ In our example, I set it to the end of &lt;code&gt;A&lt;/code&gt;, but the rende
 &lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;    }
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;And the result is&amp;hellip;
-&lt;img src=&#34;https://aliencdh.github.io/fantasia-line-output-uh-oh2.png&#34; alt=&#34;yet another failure&#34;&gt;&lt;/p&gt;
+&lt;img src=&#34;https://aliencdh.github.io/fantasia/fantasia-line-output-uh-oh2.png&#34; alt=&#34;yet another failure&#34;&gt;&lt;/p&gt;
 &lt;blockquote&gt;
 &lt;p&gt;&lt;strong&gt;Author&amp;rsquo;s note&lt;/strong&gt;: I initially thought of cutting the failures out of the guide.
 But I&amp;rsquo;ve now decided against doing that. Failing is an important part of understanding how something works,
@@ -214,17 +214,17 @@ towards the one farther away.&lt;/p&gt;
 I&amp;rsquo;ve decided to just redefine &lt;code&gt;to&lt;/code&gt; and &lt;code&gt;from&lt;/code&gt; accordingly, then swap them around if &lt;code&gt;to&lt;/code&gt; turns out to be closer
 to the top left corner.&lt;/p&gt;
 &lt;h2 id=&#34;and-now-finally&#34;&gt;And now, &lt;em&gt;finally&lt;/em&gt;&amp;hellip;&lt;/h2&gt;
-&lt;p&gt;&lt;img src=&#34;https://aliencdh.github.io/fantasia-line-output-success.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://aliencdh.github.io/fantasia/fantasia-line-output-success.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;You did it! You&amp;rsquo;ve just a the traditional first triangle!&lt;/p&gt;
 </content>
     </item>
     
     <item>
       <title>fantasia - Black Screen</title>
-      <link>https://aliencdh.github.io/fantasia-black-screen/</link>
+      <link>https://aliencdh.github.io/fantasia/black-screen/</link>
       <pubDate>Mon, 17 Apr 2023 22:41:49 +0200</pubDate>
       
-      <guid>https://aliencdh.github.io/fantasia-black-screen/</guid>
+      <guid>https://aliencdh.github.io/fantasia/black-screen/</guid>
       <description>Time to actually start coding! First, we need to decide how we&amp;rsquo;re gonna structure it. I&amp;rsquo;ll go for having a struct called Renderer, so that we can save stuff as fields instead of passing the same repetitive arguments to our functions. This struct will also contain every useful method that depends on the state.
 As such, we&amp;rsquo;ll start with the definition in src/lib.rs:
 #[derive(Clone)] pub struct Renderer { buffer: Vec&amp;lt;u8&amp;gt;, width: usize, height: usize, } Fields:</description>
@@ -349,7 +349,7 @@ Debugging code you don&amp;rsquo;t fully understand is a recipe for disaster, af
 &lt;p&gt;And this is what we get:
 
   &lt;figure class=&#34;left&#34; &gt;
-    &lt;img src=&#34;https://aliencdh.github.io/output.png&#34;   /&gt;
+    &lt;img src=&#34;https://aliencdh.github.io/fantasia/output.png&#34;   /&gt;
     
       &lt;figcaption class=&#34;center&#34; &gt;the output, 400x400 black PNG image&lt;/figcaption&gt;
     
@@ -361,10 +361,10 @@ Debugging code you don&amp;rsquo;t fully understand is a recipe for disaster, af
     
     <item>
       <title>fantasia - Starting Out</title>
-      <link>https://aliencdh.github.io/fantasia-starting-out/</link>
+      <link>https://aliencdh.github.io/fantasia/starting-out/</link>
       <pubDate>Mon, 17 Apr 2023 20:32:13 +0200</pubDate>
       
-      <guid>https://aliencdh.github.io/fantasia-starting-out/</guid>
+      <guid>https://aliencdh.github.io/fantasia/starting-out/</guid>
       <description>First, let&amp;rsquo;s define some goals:
 API-agnostic. The renderer should be a library-type crate that simply provides the necessary tools for rendering into an array of bytes representing pixels. Being API-agnostic would make it very flexible and versatile, allowing its users to adapt to their own specific use cases. Capable of rendering 3D models, of course. That&amp;rsquo;s the main point, after all. As few dependencies as possible. We don&amp;rsquo;t want to complicate ourselves or pick up too much stuff that we don&amp;rsquo;t need.</description>
       <content>&lt;p&gt;First, let&amp;rsquo;s define some goals:&lt;/p&gt;

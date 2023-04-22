@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>fantasia on AlienCDH</title>
-    <link>https://aliencdh.github.io/tags/fantasia/</link>
-    <description>Recent content in fantasia on AlienCDH</description>
+    <title>Fantasia on AlienCDH</title>
+    <link>https://aliencdh.github.io/fantasia/</link>
+    <description>Recent content in Fantasia on AlienCDH</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Tue, 18 Apr 2023 17:39:42 +0200</lastBuildDate><atom:link href="https://aliencdh.github.io/tags/fantasia/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Tue, 18 Apr 2023 17:39:42 +0200</lastBuildDate><atom:link href="https://aliencdh.github.io/fantasia/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>fantasia - Drawing Lines</title>
       <link>https://aliencdh.github.io/fantasia/line/</link>
@@ -390,36 +390,6 @@ the &lt;a href=&#34;https://crates.io/crates/image&#34;&gt;image&lt;/a&gt; crate
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;cargo add image
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;This crate isn&amp;rsquo;t actually needed for the renderer itself, but it provides a nice and simple way to test it.
 It will be removed later on.&lt;/p&gt;
-</content>
-    </item>
-    
-    <item>
-      <title>fantasia</title>
-      <link>https://aliencdh.github.io/projects/fantasia/</link>
-      <pubDate>Sun, 16 Apr 2023 00:00:00 +0000</pubDate>
-      
-      <guid>https://aliencdh.github.io/projects/fantasia/</guid>
-      <description>A 3D renderer I decided to write as a practice project, in Rust, with as few dependencies as possible.
-When I first thought about starting this project, I was pretty intimidated. I had assumed that renderers are such vastly complicated things that I couldn&amp;rsquo;t possibly hope to understand them. But I found a nice little guide about writing one in C, and I decided to follow it. But rather than just following it in C, I decided to do it in Rust.</description>
-      <content>&lt;blockquote&gt;
-&lt;p&gt;A 3D renderer I decided to write as a practice project, in Rust, with as few dependencies as possible.&lt;/p&gt;
-&lt;/blockquote&gt;
-&lt;p&gt;When I first thought about starting this project, I was pretty intimidated.
-I had assumed that renderers are such vastly complicated things that I couldn&amp;rsquo;t possibly hope to understand them.
-But I found a nice little guide about writing one in C, and I decided to follow it.
-But rather than just following it in C, I decided to do it in Rust.&lt;/p&gt;
-&lt;p&gt;And that was for 2 simple reasons:&lt;/p&gt;
-&lt;ol&gt;
-&lt;li&gt;I didn&amp;rsquo;t want to simply be able to copy-paste the parts I didn&amp;rsquo;t understand. I wanted to
-have to somehow try to understand what was going on before adapting it to Rust.&lt;/li&gt;
-&lt;li&gt;I simply like the safety of Rust, and how it makes it so that I have much fewer things to worry about
-than in C.&lt;/li&gt;
-&lt;/ol&gt;
-&lt;p&gt;But&amp;hellip; The book just didn&amp;rsquo;t work that well for me, no offense to the author.
-It explained certain concepts in a way that I just couldn&amp;rsquo;t understand, and sometimes it didn&amp;rsquo;t explain them at all.
-So I stumbled around trying my best to come up with my own solutions where I could, until it all started clicking for me.
-Hoping to make this process easier for other people, I&amp;rsquo;ve decided to try and write a guide for it.&lt;/p&gt;
-&lt;p&gt;You can also check out my code on &lt;a href=&#34;https://github.com/aliencdh/fantasia&#34;&gt;GitHub&lt;/a&gt;.&lt;/p&gt;
 </content>
     </item>
     

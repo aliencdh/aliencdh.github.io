@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  
+    <title>fantasia - Starting Out :: AlienCDH</title>
+  
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="First, let&amp;rsquo;s define some goals:
+API-agnostic. The renderer should be a library-type crate that simply provides the necessary tools for rendering into an array of bytes representing pixels. Being API-agnostic would make it very flexible and versatile, allowing its users to adapt to their own specific use cases. Capable of rendering 3D models, of course. That&amp;rsquo;s the main point, after all. As few dependencies as possible. We don&amp;rsquo;t want to complicate ourselves or pick up too much stuff that we don&amp;rsquo;t need." />
+<meta name="keywords" content="fantasia, renderer, guide, starting, setup" />
+
+  <meta name="robots" content="noodp" />
+
+<link rel="canonical" href="https://aliencdh.github.io/fantasia/starting-out/" />
+
+
+
+
+
+
+  
+  
+  
+  
+  
+  <link rel="stylesheet" href="https://aliencdh.github.io/styles.css">
+
+
+
+
+
+
+
+  <link rel="shortcut icon" href="https://aliencdh.github.io/img/theme-colors/orange.png">
+  <link rel="apple-touch-icon" href="https://aliencdh.github.io/img/theme-colors/orange.png">
+
+
+
+<meta name="twitter:card" content="summary" />
+
+
+
+<meta property="og:locale" content="en" />
+<meta property="og:type" content="article" />
+<meta property="og:title" content="fantasia - Starting Out">
+<meta property="og:description" content="First, let&amp;rsquo;s define some goals:
+API-agnostic. The renderer should be a library-type crate that simply provides the necessary tools for rendering into an array of bytes representing pixels. Being API-agnostic would make it very flexible and versatile, allowing its users to adapt to their own specific use cases. Capable of rendering 3D models, of course. That&amp;rsquo;s the main point, after all. As few dependencies as possible. We don&amp;rsquo;t want to complicate ourselves or pick up too much stuff that we don&amp;rsquo;t need." />
+<meta property="og:url" content="https://aliencdh.github.io/fantasia/starting-out/" />
+<meta property="og:site_name" content="AlienCDH" />
+
+  
+    <meta property="og:image" content="img/favicon/%!s().png">
+  
+
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="627">
+
+
+  <meta property="article:published_time" content="2023-04-17 20:32:13 &#43;0200 CEST" />
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+<body class="">
+
+
+<div class="container headings--one-size">
+
+  <header class="header">
+  <div class="header__inner">
+    <div class="header__logo">
+      <a href="https://aliencdh.github.io">
+  <div class="logo">
+    AlienCDH
+  </div>
+</a>
+
+    </div>
+    
+      <ul class="menu menu--mobile">
+  <li class="menu__trigger">Menu&nbsp;▾</li>
+  <li>
+    <ul class="menu__dropdown">
+      
+        
+          <li><a href="/">Home</a></li>
+        
+      
+        
+          <li><a href="/projects/">Projects</a></li>
+        
+      
+      
+    </ul>
+  </li>
+</ul>
+
+    
+    
+  </div>
+  
+    <nav class="navigation-menu">
+  <ul class="navigation-menu__inner menu--desktop">
+    
+      
+        
+        <li><a href="/" >Home</a></li>
+        
+      
+        
+        <li><a href="/projects/" >Projects</a></li>
+        
+      
+    
+  </ul>
+</nav>
+
+  
+</header>
+
+
+  <div class="content">
+    
+<article class="post">
+  <h1 class="post-title">
+    <a href="https://aliencdh.github.io/fantasia/starting-out/">fantasia - Starting Out</a>
+  </h1>
+  <div class="post-meta">
+    
+      <time class="post-date">
+        2023-04-17 ::
+        
+      </time>
+    
+    
+    
+  </div>
+
+  
+    <span class="post-tags">
+      
+      #<a href="https://aliencdh.github.io/tags/fantasia/">fantasia</a>&nbsp;
+      
+    </span>
+  
+  
+
+
+  
+
+  <div class="post-content"><div>
+        <p>First, let&rsquo;s define some goals:</p>
+<ol>
+<li>API-agnostic. The renderer should be a library-type crate that simply provides the necessary
+tools for rendering into an array of bytes representing pixels.
+Being API-agnostic would make it very flexible and versatile, allowing its users to adapt
+to their own specific use cases.</li>
+<li>Capable of rendering 3D models, of course. That&rsquo;s the main point, after all.</li>
+<li>As few dependencies as possible. We don&rsquo;t want to complicate ourselves or pick up too much stuff that we don&rsquo;t need.
+The renderer should be pretty simple in its design and not bring in too many dependencies to whoever might decide to use
+it in their project.</li>
+<li>Something you hopefully understand pretty well by the end of this guide. This is more of a goal for me, if anything.
+I hope my way of explaining concepts through examples will work for you as well.</li>
+</ol>
+<p>And now that that&rsquo;s out of the way&hellip;</p>
+<h3 id="setup">Setup:<a href="#setup" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
+<p>First, let&rsquo;s set our crate up.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>cargo new --lib fantasia
+</span></span><span style="display:flex;"><span>cd fantasia
+</span></span></code></pre></div><p>For now, I think we should only have 1 dependency:
+the <a href="https://crates.io/crates/image">image</a> crate.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>cargo add image
+</span></span></code></pre></div><p>This crate isn&rsquo;t actually needed for the renderer itself, but it provides a nice and simple way to test it.
+It will be removed later on.</p>
+
+      </div></div>
+
+  
+
+  
+    
+
+  
+
+  <div class="content-nav">  
+  
+    <div>
+        <a href="https://aliencdh.github.io/fantasia/black-screen/">Next: fantasia - Black Screen</a>
+    </div>
+  
+  </div>
+</article>
+
+  </div>
+
+  
+    <footer class="footer">
+  <div class="footer__inner">
+    
+      <div class="copyright">
+        <span>© 2023 Powered by <a href="http://gohugo.io">Hugo</a></span>
+    
+      <span>:: <a href="https://github.com/panr/hugo-theme-terminal" target="_blank">Theme</a> made by <a href="https://github.com/panr" target="_blank">panr</a></span>
+      </div>
+  </div>
+</footer>
+
+
+
+
+
+
+<script type="text/javascript" src="/bundle.min.js"></script>
+
+
+
+
+
+  
+</div>
+
+</body>
+</html>

@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  
+    <title>fantasia - Drawing Lines :: AlienCDH</title>
+  
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Now, on to something more interesting: drawing stuff. We need to figure out the simple things first, so we&amp;rsquo;ll start with the simplest thing you can draw (except for a point, obviously): a line segment.
+A line segment needs a starting point and an ending point. Let&amp;rsquo;s first define a Point struct:
+pub struct Point { pub x: f32, pub y: f32, pub z: f32, } Note: If your point&amp;rsquo;s x and y are actual &amp;ldquo;screen&amp;rdquo; coordinates (i." />
+<meta name="keywords" content="" />
+
+  <meta name="robots" content="noodp" />
+
+<link rel="canonical" href="https://aliencdh.github.io/fantasia/line/" />
+
+
+
+
+
+
+  
+  
+  
+  
+  
+  <link rel="stylesheet" href="https://aliencdh.github.io/styles.css">
+
+
+
+
+
+
+
+  <link rel="shortcut icon" href="https://aliencdh.github.io/img/theme-colors/orange.png">
+  <link rel="apple-touch-icon" href="https://aliencdh.github.io/img/theme-colors/orange.png">
+
+
+
+<meta name="twitter:card" content="summary" />
+
+
+
+<meta property="og:locale" content="en" />
+<meta property="og:type" content="article" />
+<meta property="og:title" content="fantasia - Drawing Lines">
+<meta property="og:description" content="Now, on to something more interesting: drawing stuff. We need to figure out the simple things first, so we&amp;rsquo;ll start with the simplest thing you can draw (except for a point, obviously): a line segment.
+A line segment needs a starting point and an ending point. Let&amp;rsquo;s first define a Point struct:
+pub struct Point { pub x: f32, pub y: f32, pub z: f32, } Note: If your point&amp;rsquo;s x and y are actual &amp;ldquo;screen&amp;rdquo; coordinates (i." />
+<meta property="og:url" content="https://aliencdh.github.io/fantasia/line/" />
+<meta property="og:site_name" content="AlienCDH" />
+
+  
+    <meta property="og:image" content="img/favicon/%!s().png">
+  
+
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="627">
+
+
+  <meta property="article:published_time" content="2023-04-18 17:39:42 &#43;0200 CEST" />
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+<body class="">
+
+
+<div class="container headings--one-size">
+
+  <header class="header">
+  <div class="header__inner">
+    <div class="header__logo">
+      <a href="https://aliencdh.github.io">
+  <div class="logo">
+    AlienCDH
+  </div>
+</a>
+
+    </div>
+    
+      <ul class="menu menu--mobile">
+  <li class="menu__trigger">Menu&nbsp;▾</li>
+  <li>
+    <ul class="menu__dropdown">
+      
+        
+          <li><a href="/">Home</a></li>
+        
+      
+        
+          <li><a href="/projects/">Projects</a></li>
+        
+      
+      
+    </ul>
+  </li>
+</ul>
+
+    
+    
+  </div>
+  
+    <nav class="navigation-menu">
+  <ul class="navigation-menu__inner menu--desktop">
+    
+      
+        
+        <li><a href="/" >Home</a></li>
+        
+      
+        
+        <li><a href="/projects/" >Projects</a></li>
+        
+      
+    
+  </ul>
+</nav>
+
+  
+</header>
+
+
+  <div class="content">
+    
+<article class="post">
+  <h1 class="post-title">
+    <a href="https://aliencdh.github.io/fantasia/line/">fantasia - Drawing Lines</a>
+  </h1>
+  <div class="post-meta">
+    
+      <time class="post-date">
+        2023-04-18 ::
+        
+      </time>
+    
+    
+    
+  </div>
+
+  
+    <span class="post-tags">
+      
+      #<a href="https://aliencdh.github.io/tags/fantasia/">fantasia</a>&nbsp;
+      
+    </span>
+  
+  
+
+
+  
+
+  <div class="post-content"><div>
+        <p>Now, on to something more interesting: drawing stuff.
+We need to figure out the simple things first,
+so we&rsquo;ll start with the simplest thing you can draw (except for a point, obviously): a line segment.</p>
+<p>A line segment needs a starting point and an ending point. Let&rsquo;s first define a <code>Point</code> struct:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-rust" data-lang="rust"><span style="display:flex;"><span><span style="color:#66d9ef">pub</span> <span style="color:#66d9ef">struct</span> <span style="color:#a6e22e">Point</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">pub</span> x: <span style="color:#66d9ef">f32</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">pub</span> y: <span style="color:#66d9ef">f32</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">pub</span> z: <span style="color:#66d9ef">f32</span>,
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><blockquote>
+<p>Note: If your point&rsquo;s <code>x</code> and <code>y</code> are actual &ldquo;screen&rdquo; coordinates (i.e. a specific position in the image buffer),
+then if you change the width or height of the output, you&rsquo;ll also need to manually update the coordinates.
+To avoid this, I&rsquo;ll be using &ldquo;world&rdquo; coordinates instead. This means I&rsquo;ll represent every component as an <code>f32</code>,
+describing the point&rsquo;s position relative to the imaginary center of the &ldquo;world&rdquo;.
+For now, that also means the center of the resulting image.</p>
+</blockquote>
+<p>Here are some basic implementations for the <code>Point</code> struct to make our life easier:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-rust" data-lang="rust"><span style="display:flex;"><span><span style="color:#66d9ef">impl</span> Point {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">pub</span> <span style="color:#66d9ef">fn</span> <span style="color:#a6e22e">new</span>(x: <span style="color:#66d9ef">f32</span>, y: <span style="color:#66d9ef">f32</span>, z: <span style="color:#66d9ef">f32</span>) -&gt; <span style="color:#a6e22e">Self</span> {
+</span></span><span style="display:flex;"><span>        Self { x, y, z }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">pub</span> <span style="color:#66d9ef">fn</span> <span style="color:#a6e22e">magnitude</span>(<span style="color:#f92672">&amp;</span>self) -&gt; <span style="color:#66d9ef">f32</span> {
+</span></span><span style="display:flex;"><span>        (self.x.powi(<span style="color:#ae81ff">2</span>) <span style="color:#f92672">+</span> self.y.powi(<span style="color:#ae81ff">2</span>) <span style="color:#f92672">+</span> self.z.powi(<span style="color:#ae81ff">2</span>)).sqrt()
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">impl</span> Add <span style="color:#66d9ef">for</span> Point {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">type</span> <span style="color:#a6e22e">Output</span> <span style="color:#f92672">=</span> Self;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">fn</span> <span style="color:#a6e22e">add</span>(<span style="color:#66d9ef">mut</span> self, rhs: <span style="color:#a6e22e">Self</span>) -&gt; <span style="color:#a6e22e">Self</span>::Output {
+</span></span><span style="display:flex;"><span>        self.x <span style="color:#f92672">+=</span> rhs.x;
+</span></span><span style="display:flex;"><span>        self.y <span style="color:#f92672">+=</span> rhs.y;
+</span></span><span style="display:flex;"><span>        self.z <span style="color:#f92672">+=</span> rhs.z;
+</span></span><span style="display:flex;"><span>        self
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">impl</span> Sub <span style="color:#66d9ef">for</span> Point {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">type</span> <span style="color:#a6e22e">Output</span> <span style="color:#f92672">=</span> Self;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">fn</span> <span style="color:#a6e22e">sub</span>(<span style="color:#66d9ef">mut</span> self, rhs: <span style="color:#a6e22e">Self</span>) -&gt; <span style="color:#a6e22e">Self</span>::Output {
+</span></span><span style="display:flex;"><span>        self.x <span style="color:#f92672">-=</span> rhs.x;
+</span></span><span style="display:flex;"><span>        self.y <span style="color:#f92672">-=</span> rhs.y;
+</span></span><span style="display:flex;"><span>        self.z <span style="color:#f92672">-=</span> rhs.z;
+</span></span><span style="display:flex;"><span>        self
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">/// Scalar Multiplication
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74"></span><span style="color:#66d9ef">impl</span> Mul<span style="color:#f92672">&lt;</span><span style="color:#66d9ef">f32</span><span style="color:#f92672">&gt;</span> <span style="color:#66d9ef">for</span> Point {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">type</span> <span style="color:#a6e22e">Output</span> <span style="color:#f92672">=</span> Self;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">fn</span> <span style="color:#a6e22e">mul</span>(<span style="color:#66d9ef">mut</span> self, rhs: <span style="color:#66d9ef">f32</span>) -&gt; <span style="color:#a6e22e">Self</span>::Output {
+</span></span><span style="display:flex;"><span>        self.x <span style="color:#f92672">*=</span> rhs;
+</span></span><span style="display:flex;"><span>        self.y <span style="color:#f92672">*=</span> rhs;
+</span></span><span style="display:flex;"><span>        self.z <span style="color:#f92672">*=</span> rhs;
+</span></span><span style="display:flex;"><span>        self
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">impl</span> Mul<span style="color:#f92672">&lt;</span>Point<span style="color:#f92672">&gt;</span> <span style="color:#66d9ef">for</span> <span style="color:#66d9ef">f32</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">type</span> <span style="color:#a6e22e">Output</span> <span style="color:#f92672">=</span> Point;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">fn</span> <span style="color:#a6e22e">mul</span>(self, rhs: <span style="color:#a6e22e">Point</span>) -&gt; <span style="color:#a6e22e">Self</span>::Output {
+</span></span><span style="display:flex;"><span>        rhs <span style="color:#f92672">*</span> self
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h2 id="the-actual-algorithm">The actual algorithm<a href="#the-actual-algorithm" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h2>
+<p>Let&rsquo;s think about our line segment as a difference of 2 vectors: <code>A</code> and <code>B</code>.
+
+  <figure class="left" >
+    <img src="/fantasia/fantasia-line-algorithm-vectors.svg"   />
+    
+      <figcaption class="center" >representation of A, B, and their difference</figcaption>
+    
+  </figure>
+
+</p>
+<p>You can get any point on a vector&rsquo;s trajectory by multiplying it with a scalar, let&rsquo;s call it <code>t</code>.
+In the above figure you can clearly see exactly that.</p>
+<p>If we limit the scalars to hundreths from 0 to 1, we can reasonably loop through every describable point in our line segment.
+We won&rsquo;t get <em>every</em> point, sure, but it should be good enough.</p>
+<p>Rust doesn&rsquo;t allow floating point ranges, so we have to do some redefining in our implementation:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-rust" data-lang="rust"><span style="display:flex;"><span><span style="color:#66d9ef">impl</span> Renderer {
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// ...
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">pub</span> <span style="color:#66d9ef">fn</span> <span style="color:#a6e22e">line</span>(<span style="color:#f92672">&amp;</span><span style="color:#66d9ef">mut</span> self, color: <span style="color:#a6e22e">Rgba</span>, from: <span style="color:#a6e22e">Point</span>, to: <span style="color:#a6e22e">Point</span>) {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">for</span> t <span style="color:#66d9ef">in</span> <span style="color:#ae81ff">0</span><span style="color:#f92672">..</span><span style="color:#ae81ff">100</span> {
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">let</span> t <span style="color:#f92672">=</span> t <span style="color:#66d9ef">as</span> <span style="color:#66d9ef">f32</span> <span style="color:#f92672">/</span> <span style="color:#ae81ff">100.</span>;
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">let</span> current <span style="color:#f92672">=</span> t <span style="color:#f92672">*</span> (to <span style="color:#f92672">-</span> from);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">// TODO: put pixel
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>Now, while we could just write the code for actually putting the pixel on the screen/image,
+it&rsquo;s better if we just turn that into its own method to avoid code duplication:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-rust" data-lang="rust"><span style="display:flex;"><span><span style="color:#66d9ef">impl</span> Renderer {
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// ...
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">pub</span> <span style="color:#66d9ef">fn</span> <span style="color:#a6e22e">to_screen_coords</span>(<span style="color:#f92672">&amp;</span>self, point: <span style="color:#a6e22e">Point</span>) -&gt; (<span style="color:#66d9ef">usize</span>, <span style="color:#66d9ef">usize</span>) {
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// the `+ 1.` is here to offset coordinates from the center to the top left corner
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        (
+</span></span><span style="display:flex;"><span>            ((point.x <span style="color:#f92672">+</span> <span style="color:#ae81ff">1.</span>) <span style="color:#f92672">*</span> self.width <span style="color:#66d9ef">as</span> <span style="color:#66d9ef">f32</span> <span style="color:#f92672">/</span> <span style="color:#ae81ff">2.</span>) <span style="color:#66d9ef">as</span> <span style="color:#66d9ef">usize</span>,
+</span></span><span style="display:flex;"><span>            ((point.y <span style="color:#f92672">+</span> <span style="color:#ae81ff">1.</span>) <span style="color:#f92672">*</span> self.height <span style="color:#66d9ef">as</span> <span style="color:#66d9ef">f32</span> <span style="color:#f92672">/</span> <span style="color:#ae81ff">2.</span>) <span style="color:#66d9ef">as</span> <span style="color:#66d9ef">usize</span>,
+</span></span><span style="display:flex;"><span>        )
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">pub</span> <span style="color:#66d9ef">fn</span> <span style="color:#a6e22e">put_pixel</span>(<span style="color:#f92672">&amp;</span><span style="color:#66d9ef">mut</span> self, coords: (<span style="color:#66d9ef">usize</span>, <span style="color:#66d9ef">usize</span>), color: <span style="color:#a6e22e">Rgba</span>) {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">let</span> idx <span style="color:#f92672">=</span> coords.<span style="color:#ae81ff">0</span> <span style="color:#f92672">+</span> coords.<span style="color:#ae81ff">1</span> <span style="color:#f92672">*</span> self.width;
+</span></span><span style="display:flex;"><span>        self.buffer[idx] <span style="color:#f92672">=</span> color.r;
+</span></span><span style="display:flex;"><span>        self.buffer[idx<span style="color:#f92672">+</span><span style="color:#ae81ff">1</span>] <span style="color:#f92672">=</span> color.g;
+</span></span><span style="display:flex;"><span>        self.buffer[idx<span style="color:#f92672">+</span><span style="color:#ae81ff">2</span>] <span style="color:#f92672">=</span> color.b;
+</span></span><span style="display:flex;"><span>        self.buffer[idx<span style="color:#f92672">+</span><span style="color:#ae81ff">3</span>] <span style="color:#f92672">=</span> color.a;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>And there we have it: a <code>to_screen_coords</code> method for converting our &ldquo;world&rdquo; coordinates into &ldquo;screen&rdquo; coordinates,
+and a <code>put_pixel</code> method.</p>
+<p>We can also make our <code>put_pixel</code> implementation smaller by using iterators again:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-rust" data-lang="rust"><span style="display:flex;"><span><span style="color:#75715e">// ...
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">pub</span> <span style="color:#66d9ef">fn</span> <span style="color:#a6e22e">put_pixel</span>(<span style="color:#f92672">&amp;</span><span style="color:#66d9ef">mut</span> self, coords: (<span style="color:#66d9ef">usize</span>, <span style="color:#66d9ef">usize</span>), color: <span style="color:#a6e22e">Rgba</span>) {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">let</span> idx <span style="color:#f92672">=</span> coords.<span style="color:#ae81ff">0</span> <span style="color:#f92672">+</span> coords.<span style="color:#ae81ff">1</span> <span style="color:#f92672">*</span> self.width;
+</span></span><span style="display:flex;"><span>    self.buffer
+</span></span><span style="display:flex;"><span>        .splice(idx<span style="color:#f92672">..</span>idx <span style="color:#f92672">+</span> <span style="color:#ae81ff">4</span>, color.bytes().iter().cloned());
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// ...
+</span></span></span></code></pre></div><p>Now, to finish <code>line</code>:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-rust" data-lang="rust"><span style="display:flex;"><span><span style="color:#75715e">// ...
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">pub</span> <span style="color:#66d9ef">fn</span> <span style="color:#a6e22e">line</span>(<span style="color:#75715e">/* ... */</span>) {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span> t <span style="color:#66d9ef">in</span> <span style="color:#ae81ff">0</span><span style="color:#f92672">..</span><span style="color:#ae81ff">100</span> {
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// ...
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        self.put_pixel(self.to_screen_coords(current), color);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// ...
+</span></span></span></code></pre></div><h2 id="results">Results<a href="#results" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h2>
+<p>Let&rsquo;s draw 3 lines in <code>main.rs</code> to form a triangle:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-rust" data-lang="rust"><span style="display:flex;"><span><span style="color:#66d9ef">fn</span> <span style="color:#a6e22e">main</span>() {
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// ...
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">let</span> a <span style="color:#f92672">=</span> Point::new(<span style="color:#ae81ff">0.</span>, <span style="color:#ae81ff">1.</span>, <span style="color:#ae81ff">0.</span>);
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">let</span> b <span style="color:#f92672">=</span> Point::new(<span style="color:#f92672">-</span><span style="color:#ae81ff">1.</span>, <span style="color:#ae81ff">0.</span>, <span style="color:#ae81ff">0.</span>);
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">let</span> c <span style="color:#f92672">=</span> Point::new(<span style="color:#ae81ff">1.</span>, <span style="color:#ae81ff">0.</span>, <span style="color:#ae81ff">0.</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    renderer.line(Rgba::new(<span style="color:#ae81ff">255</span>, <span style="color:#ae81ff">255</span>, <span style="color:#ae81ff">255</span>, <span style="color:#ae81ff">255</span>), a, b);
+</span></span><span style="display:flex;"><span>    renderer.line(Rgba::new(<span style="color:#ae81ff">255</span>, <span style="color:#ae81ff">255</span>, <span style="color:#ae81ff">255</span>, <span style="color:#ae81ff">255</span>), b, c);
+</span></span><span style="display:flex;"><span>    renderer.line(Rgba::new(<span style="color:#ae81ff">255</span>, <span style="color:#ae81ff">255</span>, <span style="color:#ae81ff">255</span>, <span style="color:#ae81ff">255</span>), c, a);
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// ...
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>}
+</span></span></code></pre></div><p>And now if we run it&hellip;</p>
+<p><img src="/fantasia/fantasia-line-output-uh-oh.png" alt=""></p>
+<p><em>oh no&hellip;</em></p>
+<blockquote>
+<p>Why did this happen? It&rsquo;s because we got something <em>slightly</em> wrong in our algorithm&rsquo;s implementation.
+We assumed the point <code>t(B-A)</code> to always be on the desired line, but it&rsquo;s only guaranteed to be on the desired <em>vector</em>.
+Why is that a problem? Well, the origin of a vector isn&rsquo;t set in stone.
+In our example, I set it to the end of <code>A</code>, but the renderer sets the left corner of the screen as the origin point.</p>
+</blockquote>
+<p>But we can fix this!</p>
+<p>By adding <code>t(B-A)</code> to <code>A</code> like in the figure below, we can find where the point actually needs to be.</p>
+
+  <figure class="left" >
+    <img src="/fantasia/fantasia-line-algorithm-vectors2.svg"   />
+    
+      <figcaption class="center" >the vector C points to the correct point</figcaption>
+    
+  </figure>
+
+
+<p>Fixing it should be as simple as this:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-rust" data-lang="rust"><span style="display:flex;"><span><span style="color:#75715e">// ...
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">pub</span> <span style="color:#66d9ef">fn</span> <span style="color:#a6e22e">line</span>(<span style="color:#75715e">/* ... */</span>) {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span> t <span style="color:#66d9ef">in</span> <span style="color:#ae81ff">0</span><span style="color:#f92672">..</span><span style="color:#ae81ff">100</span> {
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// ...
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#66d9ef">let</span> current <span style="color:#f92672">=</span> from <span style="color:#f92672">+</span> t <span style="color:#f92672">*</span> (to <span style="color:#f92672">-</span> from);
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// ...
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>And the result is&hellip;
+<img src="/fantasia/fantasia-line-output-uh-oh2.png" alt="yet another failure"></p>
+<blockquote>
+<p><strong>Author&rsquo;s note</strong>: I initially thought of cutting the failures out of the guide.
+But I&rsquo;ve now decided against doing that. Failing is an important part of understanding how something works,
+by eliminating some misconceptions. I also want this to stay here as a reminder, for my readers, but also for myself,
+that failing is normal and it&rsquo;s just part of the process. The way I figured the solution out was by just taking
+breaks and coming back with a clearer mind.</p>
+</blockquote>
+<p>Now, what&rsquo;s causing this? It turns out, this algorithm <em>really</em> doesn&rsquo;t like it when <code>t(B-A)</code> is negative.
+It might be because of the conversion to screen coordinates, or because of the formula we&rsquo;re using to calculate <code>current</code>,
+I&rsquo;m not sure. But the way I fixed it was by just ensuring we&rsquo;re always drawing from the point closer to the top left corner,
+towards the one farther away.</p>
+<p>And here&rsquo;s an implementation:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-rust" data-lang="rust"><span style="display:flex;"><span><span style="color:#66d9ef">pub</span> <span style="color:#66d9ef">fn</span> <span style="color:#a6e22e">line</span>(<span style="color:#75715e">/* ... */</span>) {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">let</span> <span style="color:#66d9ef">mut</span> from <span style="color:#f92672">=</span> self.to_screen_coords(from);
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">let</span> <span style="color:#66d9ef">mut</span> to <span style="color:#f92672">=</span> self.to_screen_coords(to);
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> to.magnitude() <span style="color:#f92672">&lt;</span> from.magnitude() {
+</span></span><span style="display:flex;"><span>        std::mem::swap(<span style="color:#f92672">&amp;</span><span style="color:#66d9ef">mut</span> from, <span style="color:#f92672">&amp;</span><span style="color:#66d9ef">mut</span> to);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span> t <span style="color:#66d9ef">in</span> t<span style="color:#f92672">..</span><span style="color:#ae81ff">100</span> {
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// ...
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        self.put_pixel(current, color);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>Since we&rsquo;re already using screen coordinates to determine from where we should actually start drawing from,
+I&rsquo;ve decided to just redefine <code>to</code> and <code>from</code> accordingly, then swap them around if <code>to</code> turns out to be closer
+to the top left corner.</p>
+<h2 id="and-now-finally">And now, <em>finally</em>&hellip;<a href="#and-now-finally" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h2>
+<p><img src="/fantasia/fantasia-line-output-success.png" alt=""></p>
+<p>You did it! You&rsquo;ve just a the traditional first triangle!</p>
+
+      </div></div>
+
+  
+
+  
+    
+
+  
+
+  <div class="content-nav">  
+  
+  </div>
+</article>
+
+  </div>
+
+  
+    <footer class="footer">
+  <div class="footer__inner">
+    
+      <div class="copyright">
+        <span>© 2023 Powered by <a href="http://gohugo.io">Hugo</a></span>
+    
+      <span>:: <a href="https://github.com/panr/hugo-theme-terminal" target="_blank">Theme</a> made by <a href="https://github.com/panr" target="_blank">panr</a></span>
+      </div>
+  </div>
+</footer>
+
+
+
+
+
+
+<script type="text/javascript" src="/bundle.min.js"></script>
+
+
+
+
+
+  
+</div>
+
+</body>
+</html>

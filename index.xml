@@ -8,6 +8,34 @@
     <language>en-us</language>
     <lastBuildDate>Sun, 16 Apr 2023 12:54:17 +0200</lastBuildDate><atom:link href="https://aliencdh.github.io/index.xml" rel="self" type="application/rss+xml" />
     <item>
+      <title>fantasia - Better Lines</title>
+      <link>https://aliencdh.github.io/fantasia/better-lines/</link>
+      <pubDate>Sat, 22 Apr 2023 19:49:08 +0200</pubDate>
+      
+      <guid>https://aliencdh.github.io/fantasia/better-lines/</guid>
+      <description>In the last post, this was the final result:
+You&amp;rsquo;ve probably noticed that there&amp;rsquo;s a really big problem with it: the lines are all dotted. That&amp;rsquo;s because of the formula used there is not aware of pixels at all. It just calculates where the next hundredth of the line segment is, and because the line stretching from the left side of the image to the right side, that means it draws in steps of 4 pixels (400/100).</description>
+      <content>&lt;p&gt;In the last post, this was the final result:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://aliencdh.github.io/fantasia/fantasia-line-output-success.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;You&amp;rsquo;ve probably noticed that there&amp;rsquo;s a really big problem with it: the lines are all dotted.
+That&amp;rsquo;s because of the formula used there is not aware of pixels at all. It just calculates where the next hundredth
+of the line segment is, and because the line stretching from the left side of the image to the right side, that means
+it draws in steps of 4 pixels (400/100). There are ~4 pixel gaps between all of those points.
+Some of them are a bit off, I assume that&amp;rsquo;s because we&amp;rsquo;re also rounding the results.&lt;/p&gt;
+&lt;p&gt;While we could just solve this issue by instead dividing the segment into &lt;code&gt;width&lt;/code&gt; parts, that would not account for vertical
+lines on images with a greater height than width, or for diagonals.
+That can be avoided by dividing the segment by the length of the diagonal, since that&amp;rsquo;d be the longest line possible
+in a rectangle.
+But in this case, that&amp;rsquo;d mean we&amp;rsquo;d divide &lt;em&gt;every single line we draw&lt;/em&gt; into approximately 565 parts.
+We&amp;rsquo;d be trying to draw around 565 pixels every time we want to draw a line, no matter how small it might be.&lt;/p&gt;
+&lt;p&gt;Luckily, there&amp;rsquo;s a much more efficient solution. Enter&amp;hellip;&lt;/p&gt;
+&lt;h2 id=&#34;bresenhams-algorithm&#34;&gt;Bresenham&amp;rsquo;s algorithm&lt;/h2&gt;
+&lt;p&gt;I&amp;rsquo;m not going to bore you with how this algorithm was discovered. All you need to understand is that
+it works by incrementally plotting&lt;/p&gt;
+</content>
+    </item>
+    
+    <item>
       <title>fantasia - Drawing Lines</title>
       <link>https://aliencdh.github.io/fantasia/line/</link>
       <pubDate>Tue, 18 Apr 2023 17:39:42 +0200</pubDate>
@@ -215,7 +243,7 @@ I&amp;rsquo;ve decided to just redefine &lt;code&gt;to&lt;/code&gt; and &lt;code
 to the top left corner.&lt;/p&gt;
 &lt;h2 id=&#34;and-now-finally&#34;&gt;And now, &lt;em&gt;finally&lt;/em&gt;&amp;hellip;&lt;/h2&gt;
 &lt;p&gt;&lt;img src=&#34;https://aliencdh.github.io/fantasia/fantasia-line-output-success.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
-&lt;p&gt;You did it! You&amp;rsquo;ve just a the traditional first triangle!&lt;/p&gt;
+&lt;p&gt;You did it! You&amp;rsquo;ve just rendered the traditional first triangle!&lt;/p&gt;
 </content>
     </item>
     
